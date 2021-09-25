@@ -16,6 +16,13 @@ exports.addToBookmarks = catchAsync(async (req, res, next) => {
         await User.updateOne(
             {_id:req.user.id},
             {$addToSet: {bookmarks: req.params.postID}});
+    }else{
+        if(req.method == "DELETE"){
+            await User.updateOne(
+                {_id:req.user.id},
+                {$pull:{bookmarks:req.params.postID}}
+            );
+        }
     }
     res.status(200).json({status:"success", message:"Bookmarked Successfully!"});
 });
@@ -40,33 +47,9 @@ exports.likePost = catchAsync( async (req, res, next)=>{
     res.status(200).json({status:"success", message: `Like ${req.method.toLowerCase()}ed successfully`,liked});  
 })
 
+exports.allowEdits = factory.allowEdits(Post);
 exports.getAll = factory.getAll(Post);
 exports.getOne = factory.getOne(Post,{path:"comments"});
 exports.deletePost = factory.deleteOne(Post);
 exports.createPost = factory.createOne(Post);
 exports.updatePost = factory.updateOne(Post);
-
-//Comments Controllers
-
-
-exports.postStats = catchAsync(async (req, res,next) => {
-    const stat = await Post.aggregate([
-        {
-            $match : {}
-        },
-        {
-            $group: {
-                _id: "$classID",
-                noOfPosts: {$sum: 1}
-            }
-        },
-        {
-            $sort:{
-                noOfPosts: -1,
-                _id: 1
-            }
-        }
-
-    ]);
-    res.status(201).json({"success":true,"data":stat});
-});

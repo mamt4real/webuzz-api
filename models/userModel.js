@@ -114,6 +114,10 @@ userSchema.virtual("noOfFollowing").get(function(){
     return 0;
 });
 
+userSchema.virtual("noOfPosts").get(function(){
+    return 0;
+});
+
 userSchema.methods.verifyPassword = function(candidatePassword, userPassword){
     return bcrypt.compare(candidatePassword,userPassword);
 }

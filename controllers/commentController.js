@@ -12,6 +12,7 @@ exports.assignIDs = catchAsync(async (req,res,next)=>{
     next();
 });
 
+exports.allowEdits = factory.allowEdits(Comment);
 exports.getComments = factory.getAll(Comment);
 exports.commentPost = factory.createOne(Comment);
 exports.deleteComment = factory.deleteOne(Comment);

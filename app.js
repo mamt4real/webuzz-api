@@ -36,7 +36,7 @@ app.use(express.json({limit: "10kb"}));
 //clean injected query attacks
 app.use(mongoSanitize());
 //clean xss cross site scripting attack
-app.use(xss());
+//app.use(xss());
 //prevent http parameter pollution
 app.use(hpp());
 

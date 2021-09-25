@@ -36,6 +36,12 @@ const commentSchema = mongoose.Schema({
     toObject:{virtuals:true}
 });
 
+commentSchema.virtual("replies",{
+    ref:"Comment",
+    localField:"_id",
+    foreignField:"parentID"
+});
+
 const getComments = async function(postId){
     const comments = await Comment
     .aggregate([
@@ -62,7 +68,7 @@ const getComments = async function(postId){
 };
 
 commentSchema.pre(/^find/, function (next){
-    this.select("-__v")
+    this.select("-__v").populate("replies")
     .populate({
         path:"authorID",
         select:"username image"
@@ -82,7 +88,8 @@ commentSchema.statics.commentStats = async function(post){
             }
         }
     ]);
-    await Post.findByIdAndUpdate(post,{noOfComments:stats[0].count});
+    if(stats[0].count)
+        await Post.findByIdAndUpdate(post,{noOfComments:stats[0].count});
 }
 
 commentSchema.pre("save", function(next){

@@ -2,6 +2,14 @@ const QueryHandler = require("../utils/queryHandler");
 const catchAsync = require("../utils/catchAsync");
 const MyError = require("../utils/myError");
 
+exports.allowEdits = Model => catchAsync(async (req,res,next)=>{
+    const id = Model.modelName.toLowerCase() + "ID";
+    const doc = await Model.findById(req.params[id]);
+    if((doc.authorID !== req.user.id) && !(req.user.clearance == "admin")){
+        throw new MyError(`You can only ${req.method.toLowerCase()} ${Model.modelName.toLowerCase()} you created`,403);
+    }
+    next();
+});
 
 const confirmExistence = (doc , docName) => {
     if(!doc){
@@ -37,8 +45,8 @@ exports.getOne = (Model,populateOptions) => catchAsync(async (req,res,next) => {
     res.status(200).json({status:"succcess", "data":doc});
 });
 
-exports.getAll = Model => catchAsync(async (req,res,next)=> {
-    const filter = req.params.postID?{postID:req.params.postID}:{};
+exports.getAll = (Model, filter={}) => catchAsync(async (req,res,next)=> {
+    filter = req.params.postID?{postID:req.params.postID,parentID:{$exists:false}}:{};
     let processed = new QueryHandler(Model.find(filter),req.query,"claps -dateCreated").process();  
     const results = await processed;
     res.status(200).json({status:"success",result:results.length,data:results});

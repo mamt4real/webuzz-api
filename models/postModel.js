@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 //const Comment = require("./commentModel");
-
+const User = require("./userModel");
 
 const postSchema = mongoose.Schema({
     authorID:{
@@ -9,18 +9,24 @@ const postSchema = mongoose.Schema({
     },
     title:{
         type:String,
-        maxlength:[60,"Title shouldnt be more than 60 characters"],
+        maxlength:[100,"Title shouldnt be more than 60 characters"],
         required:[true,"Please provide a title for the post"],
         unique:[true,"Title already exists, please re-caption your post!"],
         minlength:[15,"A title should be atleast 15 characters"]
     },
     summary:{
         type:String,
-        maxlength:[150,"Title shouldnt be more than 150 characters"],
+        maxlength:[250,"Summary shouldnt be more than 250 characters"],
         required:[true,"Please provide a title for the post"]
     },
     tags:{
-        type:[String]
+        type:[String],
+        validate:{
+            validator: function(val){
+                return val.length >= 1;
+            },
+            message: "Please provide the main topic of your post!"
+        }
     },
     coverImg:{
         type:String,
@@ -51,10 +57,20 @@ const postSchema = mongoose.Schema({
     toObject:{virtuals:true}
 });
 
-/* postSchema.virtual("noOfComments").get(function(){
-    return this.comments.length;
-});
- */
+postSchema.statics.countPostAndAssign = async function(author){
+    await User.findByIdAndUpdate(
+        author,
+        {
+            noOfPosts:{$inc:1}
+        }
+    );
+}
+
+postSchema.pre("save", function(next){
+    if(this.isNew)
+        this.constructor.countPostAndAssign(this.authorID);
+    next();
+})
 postSchema.virtual("comments",{
     ref:"Comment",
     foreignField:"postID",

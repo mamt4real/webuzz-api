@@ -10,8 +10,8 @@ router.route("/")
 
 router.route("/:commentID")
     .get(commentController.getOne)
-    .patch(authController.protectRoute,commentController.updateComment)
-    .delete(authController.protectRoute,commentController.deleteComment)
+    .patch(authController.protectRoute,commentController.allowEdits,commentController.updateComment)
+    .delete(authController.protectRoute,commentController.allowEdits,commentController.deleteComment)
 
 /* router.route("/:pid/reply")
     .post(authController.protectRoute,commentController.replyComment)
