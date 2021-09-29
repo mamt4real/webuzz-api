@@ -75,7 +75,8 @@ postSchema.pre("save", function(next){
 postSchema.virtual("comments",{
     ref:"Comment",
     foreignField:"postID",
-    localField: "_id"
+    localField: "_id",
+    match: {parentID:null}
 });
 
 postSchema.virtual("noOfClaps").get(function(){

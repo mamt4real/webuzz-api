@@ -63,11 +63,7 @@ exports.getAll = factory.getAll(Post);
 exports.getOne = factory.getOne(Post,
     [
         ["authorID","username image"],
-        [{
-            path:"comments",
-            match: {parentID:null},
-            select: "content authorID"
-        }]
+        ["comments","content authorID"]
     ]);
 exports.deletePost = factory.deleteOne(Post);
 exports.createPost = factory.createOne(Post);
