@@ -74,7 +74,11 @@ const userSchema = mongoose.Schema({
             type:mongoose.Schema.ObjectId,
             ref:"Post"
         }
-    ]
+    ],
+    noOfPosts:{
+        type: Number,
+        default:0
+    }
 },{
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
@@ -111,10 +115,6 @@ userSchema.virtual("noOfFollowers").get(function(){
 userSchema.virtual("noOfFollowing").get(function(){
     if(this.following)
         return this.following.length;
-    return 0;
-});
-
-userSchema.virtual("noOfPosts").get(function(){
     return 0;
 });
 

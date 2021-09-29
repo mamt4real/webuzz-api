@@ -11,6 +11,17 @@ exports.assignIDs = catchAsync(async (req,res,next)=>{
     next();
 });
 
+exports.setDefaultFilter = (req,res,next) =>{
+    const filter = {published:true};
+    req.filter = filter;
+    next();
+}
+
+exports.publishPost = catchAsync(async (req,res,next)=> {
+    await Post.updateOne({_id:req.params.postID},{published:true});
+    res.status(200).json({status:"success",message:"Post published successfully"});
+});
+
 exports.addToBookmarks = catchAsync(async (req, res, next) => {
     if(!req.user.bookmarks.includes(req.params.postID)){
         await User.updateOne(
@@ -45,11 +56,19 @@ exports.likePost = catchAsync( async (req, res, next)=>{
         );
     }
     res.status(200).json({status:"success", message: `Like ${req.method.toLowerCase()}ed successfully`,liked});  
-})
+});
 
 exports.allowEdits = factory.allowEdits(Post);
 exports.getAll = factory.getAll(Post);
-exports.getOne = factory.getOne(Post,{path:"comments"});
+exports.getOne = factory.getOne(Post,
+    [
+        ["authorID","username image"],
+        [{
+            path:"comments",
+            match: {parentID:null},
+            select: "content authorID"
+        }]
+    ]);
 exports.deletePost = factory.deleteOne(Post);
 exports.createPost = factory.createOne(Post);
 exports.updatePost = factory.updateOne(Post);

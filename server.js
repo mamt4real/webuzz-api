@@ -6,7 +6,7 @@ const app = require("./app");
 
 //console.log(process.env);
 
-mongoose.connect(process.env.DATABASE,{
+mongoose.connect(process.env.DATABASE_VIRTUAL,{
     useCreateIndex:true,
     useNewUrlParser:true,
     useFindAndModify:false,

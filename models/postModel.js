@@ -4,7 +4,8 @@ const User = require("./userModel");
 
 const postSchema = mongoose.Schema({
     authorID:{
-        type:String,
+        type:mongoose.Schema.ObjectId,
+        ref:"User",
         required: [true,"Please provide the author ID"]
     },
     title:{
@@ -57,18 +58,18 @@ const postSchema = mongoose.Schema({
     toObject:{virtuals:true}
 });
 
-postSchema.statics.countPostAndAssign = async function(author){
+postSchema.statics.incrementAuthorPosts = async function(author){
     await User.findByIdAndUpdate(
         author,
         {
-            noOfPosts:{$inc:1}
+            $inc:{noOfPosts:1}
         }
     );
 }
 
 postSchema.pre("save", function(next){
     if(this.isNew)
-        this.constructor.countPostAndAssign(this.authorID);
+        this.constructor.incrementAuthorPosts(this.authorID);
     next();
 })
 postSchema.virtual("comments",{

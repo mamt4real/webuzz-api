@@ -11,7 +11,7 @@ const commentSchema = mongoose.Schema({
     parentID:{
         type:mongoose.Schema.ObjectId,
         ref: "Comment",
-        required: false
+        default: null,
     },
     authorID:{
         type:mongoose.Schema.ObjectId,
@@ -68,7 +68,8 @@ const getComments = async function(postId){
 };
 
 commentSchema.pre(/^find/, function (next){
-    this.select("-__v").populate("replies")
+    this//.select("-__v")
+    .populate("replies")
     .populate({
         path:"authorID",
         select:"username image"
@@ -77,24 +78,12 @@ commentSchema.pre(/^find/, function (next){
 });
 
 commentSchema.statics.commentStats = async function(post){
-    const stats = await this.aggregate([
-        {
-            $match:{postID:post, parentID: {$exists: false}}
-        },
-        {
-            $group:{
-                _id: "$postID",
-                count: {$sum: 1}
-            }
-        }
-    ]);
-    if(stats[0].count)
-        await Post.findByIdAndUpdate(post,{noOfComments:stats[0].count});
+    const count = await this.find({postID:post,parentID: null}).countDocuments();
+    await Post.findByIdAndUpdate(post,{noOfComments:count});
 }
 
-commentSchema.pre("save", function(next){
+commentSchema.post("save", function(){
     this.constructor.commentStats(this.postID);
-    next();
 })
 
 const Comment = mongoose.model("Comment", commentSchema);

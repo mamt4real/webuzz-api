@@ -6,7 +6,7 @@ const router = express.Router({mergeParams:true});
 
 router.route("/")
     .post(authController.protectRoute,commentController.assignIDs,commentController.commentPost)
-    .get(commentController.getComments);
+    .get(commentController.setDefaultFilter,commentController.getComments);
 
 router.route("/:commentID")
     .get(commentController.getOne)

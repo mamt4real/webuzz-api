@@ -8,7 +8,7 @@ const router = express.Router();
 router.use("/:postID/comments", commentRouter);
 
 router.route("/")
-    .get(postController.getAll)
+    .get(postController.setDefaultFilter,postController.getAll)
     .post(authController.protectRoute,postController.assignIDs,postController.createPost);
     
 router.route("/:postID")
@@ -17,6 +17,8 @@ router.route("/:postID")
     .delete(authController.protectRoute,postController.allowEdits,postController.deletePost);
 
 router.use(authController.protectRoute);
+
+router.post("/:postID/publish",authController.restrictRouteTo("admin"),postController.publishPost);
 
 router.route("/:postID/bookmark")
     .post(postController.addToBookmarks)

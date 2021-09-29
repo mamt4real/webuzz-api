@@ -5,9 +5,15 @@ const MyError = require("../utils/myError");
 exports.allowEdits = Model => catchAsync(async (req,res,next)=>{
     const id = Model.modelName.toLowerCase() + "ID";
     const doc = await Model.findById(req.params[id]);
-    if((doc.authorID !== req.user.id) && !(req.user.clearance == "admin")){
+    if((doc.authorID != req.user.id) && !(req.user.clearance == "admin")){
         throw new MyError(`You can only ${req.method.toLowerCase()} ${Model.modelName.toLowerCase()} you created`,403);
     }
+    //you cant change author or publish post via this route
+    ["authorID", "published"].forEach(field => {
+        if(req.body[field])
+            delete req.body[field];
+    });
+
     next();
 });
 
@@ -39,14 +45,18 @@ exports.updateOne = Model => catchAsync(async (req, res, next) => {
 exports.getOne = (Model,populateOptions) => catchAsync(async (req,res,next) => {
     const id = Model.modelName.toLowerCase() + "ID";
     let query = Model.findById(req.params[id]);
-    if(populateOptions) query = query.populate(populateOptions); 
+    if(populateOptions) {
+        populateOptions.forEach(option =>{
+            query = query.populate(...option);
+        });
+    }
     const doc = await query;
     confirmExistence(doc,Model.modelName);
     res.status(200).json({status:"succcess", "data":doc});
 });
 
-exports.getAll = (Model, filter={}) => catchAsync(async (req,res,next)=> {
-    filter = req.params.postID?{postID:req.params.postID,parentID:{$exists:false}}:{};
+exports.getAll = (Model) => catchAsync(async (req,res,next)=> {
+    const filter = req.filter?req.filter:{};
     let processed = new QueryHandler(Model.find(filter),req.query,"claps -dateCreated").process();  
     const results = await processed;
     res.status(200).json({status:"success",result:results.length,data:results});

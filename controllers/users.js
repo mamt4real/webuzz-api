@@ -61,7 +61,9 @@ const followUnfollow = async (req, res, followerUpdate, followingUpdate) =>{
 }
 
 exports.follow = catchAsync(async (req,res,next) =>{
-
+    if(!req.body.userID){
+        throw new MyError("Please provide the userID you wish to follow",401);
+    }
     if(req.user.following.includes(req.body.userID)){
         throw new MyError("You are already following this member",401);
     }

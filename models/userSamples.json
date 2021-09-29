@@ -1,0 +1,88 @@
+[
+    {
+        "username":"user1",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Auwal First",
+        "email":"user1@webuzz.api"
+    },
+    {
+        "username":"user2",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Sani s. Sani",
+        "email":"user2@webuzz.api"
+    },
+    {
+        "username":"user3",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Janet doe",
+        "email":"user3@webuzz.api"
+    },
+    {
+        "username":"user4",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Rabiu r. fourth",
+        "email":"user4@webuzz.api"
+    },
+    {
+        "username":"user5",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Hamisu h. Fifth",
+        "email":"user5@webuzz.api"
+    },
+    {
+        "username":"user6",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Sadisu s. Sixth",
+        "email":"user6@webuzz.api"
+    },
+    {
+        "username":"user7",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Sabiu s. Saleh",
+        "email":"user7@webuzz.api"
+    },
+    {
+        "username":"user8",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Saminu s. Eight",
+        "email":"user8@webuzz.api"
+    },
+    {
+        "username":"user9",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Programmer Interface",
+        "email":"user9@webuzz.api"
+    },
+    {
+        "username":"user10",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Legend of Legends",
+        "email":"user10@webuzz.api"
+    },
+    {
+        "username":"mamt4real",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Super Administrator",
+        "email":"mamt4real@webuzz.api",
+        "clearance":"admin"
+    },
+    {
+        "username":"iysheme",
+        "password":"12345pass",
+        "confirmpass":"12345pass",
+        "name":"Normal Administrator",
+        "email":"iysheme@webuzz.api",
+        "clearance":"admin"
+    }
+]

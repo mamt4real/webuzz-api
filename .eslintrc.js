@@ -1,6 +1,24 @@
-{
-    "extends":["airbnb","prettier","plugin:node/recommended"],
-    "plugins":["prettier"],
+module.exports = {
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "airbnb",
+        "prettier"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
     "rules":{
         "prettier/prettier":"error",
         "spaced-comment":"off",
@@ -16,4 +34,6 @@
         "prefer-destructuring":["error",{"object":true,"array":false}],
         "no-unused-vars":["error",{"argsIgnorePattern":"req|res|val"}]
     }
-}
+};
+
+    
