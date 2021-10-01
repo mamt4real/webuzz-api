@@ -4,7 +4,7 @@ const User = require("./userModel");
 
 const postSchema = mongoose.Schema({
     authorID:{
-        type:mongoose.Schema.ObjectId,
+        type:String,
         ref:"User",
         required: [true,"Please provide the author ID"]
     },
@@ -38,7 +38,8 @@ const postSchema = mongoose.Schema({
         default: Date.now()
     },
     content:{
-        type:String
+        type:String,
+        required: [true, "Please provide the content of your posts"]
     },
     published:{
         type:Boolean,
@@ -85,11 +86,6 @@ postSchema.virtual("noOfClaps").get(function(){
     return 0;
 })
 
-//single index
-//postSchema.index({dateCreated:1});
-
-//compound index
-//postSchema.index({claps:1,tags:1});
 
 const Post = mongoose.model("Post",postSchema);
 module.exports = Post;

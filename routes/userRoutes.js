@@ -5,7 +5,6 @@ const postRouter= require("./postRoutes");
 
 const router = express.Router();
 
-router.use("/me/posts",postRouter);
 
 router.post("/login",authController.signin)
 router.post("/signup",authController.signup);
@@ -18,6 +17,7 @@ router.patch("/updatepassword",authController.updatePassword);
 router.patch("/updateme",userController.updateMe);
 router.delete("/deleteme",userController.deleteMe);
 router.get("/me",userController.getMe,userController.getUser);
+router.use("/me/posts",postRouter);
 
 router.route("/followers")
     .get(userController.getFollowers)

@@ -56,7 +56,7 @@ exports.getOne = (Model,populateOptions) => catchAsync(async (req,res,next) => {
 });
 
 exports.getAll = (Model) => catchAsync(async (req,res,next)=> {
-    const filter = req.filter?req.filter:{};
+    const filter = req.filter? req.filter: {};
     let processed = new QueryHandler(Model.find(filter),req.query,"claps -dateCreated").process();  
     const results = await processed;
     res.status(200).json({status:"success",result:results.length,data:results});

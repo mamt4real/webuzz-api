@@ -12,7 +12,13 @@ exports.assignIDs = catchAsync(async (req,res,next)=>{
 });
 
 exports.setDefaultFilter = (req,res,next) =>{
-    const filter = {published:true};
+    const filter = {};
+    filter.published= true;
+    if(req._parsedOriginalUrl.pathname.split("/").includes("me")){
+        filter["authorID"] = req.user.id;
+    }else if(req.params.userID){
+        filter["authorID"] = req.params.userID;
+    }
     req.filter = filter;
     next();
 }
