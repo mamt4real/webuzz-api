@@ -1,0 +1,44 @@
+extends base
+
+block content 
+    main.main
+        .card-container
+            each post in posts
+                .card
+                    .card__header
+                        .card__picture
+                            .card__picture-overlay &nbsp;
+                                img(src=`/img/posts/${post.coverImg}` alt=`${post.title.substring(0,10)}` class='card__picture-/img')
+                        h3.heading-tertirary
+                            span #{post.title}
+
+                    .card__details
+                        h4.card__sub-heading Summary
+                        p.card__text #{post.summary}
+                        .card__data
+                            svg.card__icon
+                                use(xlink:href='/img/icons.svg#icon-map-pin')
+                            span= post.tags[0]
+                        .card__data
+                            svg.card__icon
+                                use(xlink:href='/img/icons.svg#icon-calendar')
+                            //- - const date = post.dateCreated.toLocaleString("en-us", {month:"long", year:"numeric"});
+                            span= post.duration
+                        .card__data
+                            svg.card__icon
+                                use(xlink:href='/img/icons.svg#icon-clock')
+                            //- each tag in post.tags
+                            span #{post.readTime} Minutes Reading
+                        .card__data
+                            svg.card__icon
+                                use(xlink:href='/img/icons.svg#icon-user')
+                            span= post.authorID.name
+
+                    .card__footer
+                        p
+                            span.card__footer-value Comments
+                            span.card__footer-text &nbsp; &nbsp; #{post.noOfComments} 
+                        p.card__ratings
+                            span.card__footer-value Claps
+                            span.card__footer-text &nbsp; &nbsp; #{post.noOfClaps}
+                        a.btn.btn--green.btn--small(href=`/post/${post.id}`) Read More

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { getDuration } = require("../utils/myUtills");
 const Post = require("./postModel");
 
 const commentSchema = mongoose.Schema({
@@ -69,11 +69,8 @@ const getComments = async function(postId){
 
 commentSchema.pre(/^find/, function (next){
     this//.select("-__v")
-    .populate("replies")
-    .populate({
-        path:"authorID",
-        select:"username image"
-    });
+    .populate("replies", "content authorID")
+    .populate("authorID","name image username");
     next();
 });
 
@@ -84,7 +81,11 @@ commentSchema.statics.commentStats = async function(post){
 
 commentSchema.post("save", function(){
     this.constructor.commentStats(this.postID);
-})
+});
+
+commentSchema.virtual('duration').get(function(){
+    return getDuration(this.dateCreated);
+});
 
 const Comment = mongoose.model("Comment", commentSchema);
 

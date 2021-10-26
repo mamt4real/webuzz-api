@@ -1,0 +1,11 @@
+mixin overviewBox(label, text, icon, link)
+    .overview-box__detail
+        svg.overview-box__icon
+            use(xlink:href=`/img/icons.svg#icon-${icon}`)
+        -if(link)
+            a.btn-text(href=`${link}`)
+                span.overview-box__label= label
+                | &nbsp;
+        -else
+            span.overview-box__label= label
+        span.overview-box__text= text

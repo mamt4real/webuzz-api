@@ -1,0 +1,27 @@
+doctype html
+html
+  head 
+    title WEBUZZZ | #{title}
+    link(rel='stylesheet' href='/css/style.css')
+    link(rel='stylesheet' href='https://googleapis.com/css?family=Lato:300,300i,700')
+    meta(name="viewport" content='width=device-width, initial-scale=1.0')
+    meta(charset='UTF-8')
+    //- meta(http-equiv='Content-Security-Policy' content='default-src *;') 
+    //- 'self' data: gap: 'unsafe-eval' ws: ; style-src 'self' 'unsafe-inline'; script-src *; font-src *;")
+
+  body
+    // use for dialog boxes
+    .freeze__layer(style='display:none;')
+
+    // Header Wale
+    include _header
+
+    //Content
+    block content 
+      h1 Welcome Page #{post}
+
+    //footer
+    include _footer
+
+    script(src='/js/bundle.js')
+    //- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

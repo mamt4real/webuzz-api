@@ -1,0 +1,29 @@
+extends base
+
+mixin navItem(link, icon, text, c)
+    li(class=`${c===classStatus?'side-nav--active':''}`)
+        a(href=`${link}`)
+            svg
+                use(xlink:href=`/img/icons.svg#icon-${icon}`)
+            | #{text}
+
+block content
+    main.main
+        .user-view
+            nav.user-view__menu
+                ul.side-nav
+                    - const userMenus = [['/me','settings','Profile Settings'],['/me/posts','briefcase','My Posts'],['/me/followers','users','My Followers'],['/me/bookmarks','bookmark','Bookmarks']]
+                    each menu, i in userMenus
+                        +navItem(...menu,i)
+
+                -if(user.clearance === 'admin')
+                    .admin-nav
+                        h5.admin-nav__heading Admin
+                        ul.side-nav
+                            -const adminMenus = [['/manage-users','users','Manage Users'],['/manage-posts','briefcase','Manage Posts'],['#','star','Manage Reviews'],['#','credit-card','Billings']]
+                            each menu , i in adminMenus
+                                +navItem(...menu,i+4)
+
+            block userContent 
+                .content 
+                    h1 This is a sample

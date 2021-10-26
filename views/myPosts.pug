@@ -1,0 +1,47 @@
+extends _accountMenu
+
+include _overviewBox
+
+block userContent
+    .user-view__content
+        .user-view__form-container.my-user-view
+            h2.heading-secondary.ma-bt-md
+                -if(posts.length == 0)
+                    | #{bookmarked?'You have no Bookmarks Yet':"You haven't created a post yet"}
+                -else 
+                    | #{title}
+            form#search-form.form--mine
+                input#search-query.form__input(type='text' required name='search-query' placeholder='Search posts By Title')                    
+                button#search-btn.btn.btn--green.span-all-rows(value='title') Search
+                -if(!bookmarked)
+                    a.btn.btn--green.btn--small(href='/me/posts/create') New Post
+        .line &nbsp;
+        .user-view__form-container.user-view__form-container--follower
+            .card-container.card-container--mine
+                each post in posts
+                    .card
+                        .card__header
+                            .card__picture
+                                .card__picture-overlay &nbsp;
+                                    img(src=`/img/posts/${post.coverImg}` alt=`${post.title.substring(0,10)}` class='card__picture-img')
+                            h3.heading-tertirary
+                                span #{post.title}
+                        .card__details.card__details--green
+                            h4.card__sub-heading Summary
+                            p.card__text #{post.summary}
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-calendar')
+                                - const date = post.dateCreated.toLocaleString("en-us", {month:"long", year:"numeric"});
+                                span= date
+                                //- span #{(date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds())}
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-flag')
+                                //- each tag in post.tags
+                                span= post.tags[0]
+                        .card__footer
+                            a.btn.btn--green.btn--small(href=`/post/${post.id}`) Read More
+                            -if(!bookmarked)
+                                a.btn.btn--green.btn--small(href=`/me/posts/edit/${post.id}`) Edit
+                            btn#deletePost.btn.btn--red.btn--small(value=`${post.id}`) Delete

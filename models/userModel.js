@@ -9,12 +9,11 @@ const userSchema = mongoose.Schema({
         required:[true,"Please provide a name"]
     },
     image:{
-        type:String
+        type:String,
+        default: 'default.jpg'
     },
     username:{
         type:String,
-        required:[true,"please provide a username"],
-        unique:[true,"username already exist"]
     },
     email:{
         type:String,
@@ -49,6 +48,10 @@ const userSchema = mongoose.Schema({
             message:"clearance should be one of admin/client"
         },
         default:"member"
+    },
+    about:{
+        type:String,
+        default:"Hey there, I'm new in Webuzz"
     },
     passwordChangedAt:{
         type:Date,

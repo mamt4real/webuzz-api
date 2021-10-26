@@ -5,8 +5,8 @@ const postRouter= require("./postRoutes");
 
 const router = express.Router();
 
-
-router.post("/login",authController.signin)
+router.post("/login",authController.signin);
+router.get("/logout",authController.logout);
 router.post("/signup",authController.signup);
 router.post("/forgotpassword",authController.forgotPassword);
 router.patch("/resetpassword/:token", authController.resetPassword);
@@ -14,7 +14,7 @@ router.patch("/resetpassword/:token", authController.resetPassword);
 router.use(authController.protectRoute)
 
 router.patch("/updatepassword",authController.updatePassword);
-router.patch("/updateme",userController.updateMe);
+router.patch("/updateme", userController.uploadUserPhoto, userController.resizeUserPhoto,userController.updateMe);
 router.delete("/deleteme",userController.deleteMe);
 router.get("/me",userController.getMe,userController.getUser);
 router.use("/me/posts",postRouter);

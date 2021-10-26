@@ -1,0 +1,26 @@
+extends _accountMenu
+
+block userContent
+    .user-view__content
+        .user-view__form-container
+            h2.heading-secondary.ma-bt-md Create new user
+            form#user-create-form.form.form-user-data(enctype='multipart/form-data')
+                .form__group
+                    label.form__label(for='name') Name
+                    input#name.form__input(type='text', required name='name')
+                .form__group.ma-bt-md
+                    label.form__label(for='email') Email address
+                    input#email.form__input(type='email', required name='email')
+                .form__group
+                    label.form__label(for='password') Password
+                    input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                .form__group.ma-bt-lg
+                    label.form__label(for='password-confirm') Confirm password
+                    input#password-confirm.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                .form__group.ma-bt-md
+                    label.form__label(for='summary') Clearance
+                    select#clearance.form__input(name='clearance' value='member')
+                        option(value='member') Member 
+                        option(value='admin') Admin                 
+                .form__group.right
+                    button#create-user-btn.btn.btn--small.btn--green(name='createBtn' ) Create User

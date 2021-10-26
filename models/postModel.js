@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { getDuration } = require("../utils/myUtills");
 //const Comment = require("./commentModel");
 const User = require("./userModel");
 
@@ -31,7 +32,7 @@ const postSchema = mongoose.Schema({
     },
     coverImg:{
         type:String,
-        required:[true,"Please provide a cover Image for your post"]
+        default: 'default.png'
     },
     dateCreated:{
         type:Date,
@@ -40,6 +41,10 @@ const postSchema = mongoose.Schema({
     content:{
         type:String,
         required: [true, "Please provide the content of your posts"]
+    },
+    readTime:{
+        type: Number,
+        default: 1
     },
     published:{
         type:Boolean,
@@ -69,14 +74,19 @@ postSchema.statics.incrementAuthorPosts = async function(author){
 }
 
 postSchema.pre("save", function(next){
+    if(this.isNew || this.isModified('content')){
+        const x = Math.round(this.content.split(' ').length/200);
+        this.readTime = x==0?1:x;
+    }
     if(this.isNew)
         this.constructor.incrementAuthorPosts(this.authorID);
     next();
-})
+});
 postSchema.virtual("comments",{
     ref:"Comment",
     foreignField:"postID",
     localField: "_id",
+    select: "content authorID",
     match: {parentID:null}
 });
 
@@ -84,7 +94,11 @@ postSchema.virtual("noOfClaps").get(function(){
     if(this.claps)
         return this.claps.length;
     return 0;
-})
+});
+
+postSchema.virtual('duration').get(function(){
+    return getDuration(this.dateCreated);
+});
 
 
 const Post = mongoose.model("Post",postSchema);

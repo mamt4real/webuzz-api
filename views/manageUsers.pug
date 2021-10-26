@@ -1,0 +1,40 @@
+extends _accountMenu
+
+block userContent
+    .user-view__content
+        .user-view__form-container.my-user-view
+            h2.heading-secondary.ma-bt-md Manage Users
+        form#search-form.form--mine
+            input#search-query.form__input(type='text' required name='search-query' placeholder='Search Users By Name')                    
+            button#search-btn.btn.btn--green.span-all-rows(value='name') Search              
+            a.btn.btn--green.span-all-rows(href='/create-user') New User
+        .line &nbsp;
+        .user-view__form-container.my-user-view
+            .reviews--edited
+                each user in results
+                    .reviews__card
+                        .reviews__avatar
+                            img.reviews__avatar-img(src=`/img/users/${user.image}` alt=`${user.username}`)
+                            h6.reviews__user= user.name
+                        .reviews__text.user-about= user.about
+                        .card__details.card__details--edited
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-award')
+                                span
+                                    b #{user.clearance.toUpperCase()}
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-message-circle')
+                                span 
+                                    b #{user.noOfPosts}
+                            .card__data
+                                svg.card__icon
+                                    use(xlink:href='/img/icons.svg#icon-users')
+                                span 
+                                    b #{user.noOfFollowers}
+                        .reviews__rating
+                            button.btn.btn--red.btn-small.delete-user-btn(value=user.id)
+                                | Delete user&nbsp;
+                                svg.heading-box__icon
+                                    use(xlink:href=`/img/icons.svg#icon-delete`)

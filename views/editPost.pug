@@ -1,0 +1,30 @@
+extends _accountMenu
+
+block userContent 
+    .user-view__content
+        .user-view__form-container.user-view__form-container--edit-create
+            h2.heading-secondary.ma-bt-md= create?'Create Post':'Edit Post'
+            form#post-edit.form.form-user-data(enctype='multipart/form-data')
+                .form__group
+                    label.form__label(for='title') Title
+                    input#title.form__input(type='text', value=create?false:`${post.title}`, name='title' required)
+                .form__group.ma-bt-md
+                    label.form__label(for='tags') Topic(s)
+                    .topics__container
+                        -const length = post.tags.length
+                        input#tags-1.form__input(type='text', value=create?false:post.tags[0], name='tags' required placeholder='Main Topic')
+                        each topic, i in ['Sub-topic 1', 'Sub-topic 2', 'Sub-topic 3']
+                            input.form__input(type='text', placeholder=topic, id=`tags-${i+2}`, name='tags' value=(create || !((i+1)<length )?false:post.tags[i+1]))
+                .form__group.ma-bt-md
+                    label.form__label(for='summary') Summary
+                    textarea#summary.form__input.article-input(type='text', name='summary' required rows='4')= create?'':post.summary
+                .form__group.form__photo-upload
+                    img.form__user-photo(src=`/img/posts/${post.coverImg}`, alt="Cover Photo")
+                    input#coverImg.form__upload(type='file' accept='image/*' name='coverImg')
+                    label.form__label(for='coverImg')= `Choose ${create?'a':'new'} cover Image`
+                .form__group.ma-bt-md
+                    label.form__label(for='content') Content
+                    textarea#content.form__input.article-input.form__input--post(row='50', col='50', required name='content')= create?'':post.content
+                .form__group.right
+                    button#update.btn.btn--small.btn--green(value=create?false:`${post.id}`)= create?'Create':'Update'
+        .line &nbsp;

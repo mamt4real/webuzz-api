@@ -1,0 +1,35 @@
+extends _accountMenu
+
+include _overviewBox
+
+block userContent 
+    .user-view__content
+        .user-view__form-container
+            .overview-box__group
+                h2.heading-secondary.ma-bt-lg Quick Stats
+                - const overviews = [["Followers",user.noOfFollowers,"users"],["Following",user.noOfFollowing,"users"]]
+                each overview in overviews 
+                    +overviewBox(...overview)
+        .line &nbsp;
+        each users, i in [followings, followers]
+            .user-view__form-container.user-view__form-container--follower
+                h2.heading-secondary.ma-bt-md
+                    -if(users.length == 0)
+                        | #{i?'You have no Followers yet':"You have'nt follow anybody yet"}
+                    -else 
+                        | My #{i?'Followers':'Followings'}
+                -if(users.length > 0)
+                    .reviews
+                        each follower in users
+                            .reviews__card
+                                .reviews__avatar
+                                    img.reviews__avatar-img(src=`/img/users/${follower.image}` alt=`${follower.username}`)
+                                    h6.reviews__user= follower.name
+                                .reviews__text= follower.about
+                                .reviews__rating
+                                    button.btn.btn--green.btn-small(value=`${follower.id}` class=`${i?'follow-btn':'follow-btn btn--red'}`)
+                                        svg.heading-box__icon
+                                            use(xlink:href='/img/icons.svg#icon-plus-circle')
+                                        | &nbsp; #{i?'Follow Back':'Unfollow'}
+            -if(i == 0)
+                .line &nbsp;

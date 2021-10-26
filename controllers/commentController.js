@@ -13,10 +13,12 @@ exports.assignIDs = catchAsync(async (req,res,next)=>{
 });
 
 exports.setDefaultFilter = (req,res,next) =>{
-    const filter = req.params.postID?{postID:req.params.postID,parentID:{$exists:false}}:{parentID:{$exists:false}};
+    const filter = req.params.postID?{postID:req.params.postID,parentID:null}:{parentID:null};
     req.filter = filter;
     next();
 }
+
+exports.likeComment = factory.like(Comment);
 exports.allowEdits = factory.allowEdits(Comment);
 exports.getComments = factory.getAll(Comment);
 exports.commentPost = factory.createOne(Comment);

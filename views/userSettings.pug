@@ -1,0 +1,42 @@
+extends _accountMenu
+
+include _overviewBox 
+
+block userContent
+    .user-view__content
+        .user-view__form-container
+            h2.heading-secondary.ma-bt-md Your account settings
+            form#user-edit.form.form-user-data(enctype='multipart/form-data')
+                .form__group
+                    label.form__label(for='name') Name
+                    input#name.form__input(type='text', value=`${user.name}`, required name='name')
+                .form__group.ma-bt-md
+                    label.form__label(for='email') Email address
+                    input#email.form__input(type='email', value=`${user.email}`, required name='email')
+                .form__group.ma-bt-md
+                    label.form__label(for='summary') About
+                    textarea#about.form__input.article-input(type='text', name='about' rows='4')= user.about
+                .form__group.form__photo-upload
+                    img.form__user-photo(src=`/img/users/${user.image}`, alt=`${user.username} Photo`)
+                    input#image.form__upload(type='file' name='image' accept='image/*')
+                    label.form__label(for='image') Choose new photo                    
+                .form__group.right
+                    button#userDataButton.btn.btn--small.btn--green(name='saveBtn' value=`${user.id}`) Save settings
+        .line &nbsp;
+        .user-view__form-container
+            h2.heading-secondary.ma-bt-md Password change
+            form#user-password.form.form-user-settings
+                .form__group
+                    label.form__label(for='password-current') Current password
+                    input#password-current.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                .form__group
+                    label.form__label(for='password') New password
+                    input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                .form__group.ma-bt-lg
+                    label.form__label(for='password-confirm') Confirm password
+                    input#password-confirm.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                .form__group.right
+                    button#save-pass.btn.btn--small.btn--green Save password
+        .line &nbsp;
+        .user-view__form-container
+            button#delete-account.btn.btn--red.span-all-rows Delete My Account

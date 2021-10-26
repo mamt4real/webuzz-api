@@ -3,8 +3,9 @@ const catchAsync = require("../utils/catchAsync");
 const MyError = require("../utils/myError");
 const jwt = require("jsonwebtoken");
 const {promisify} = require("util");
-const sendEmail = require("../utils/email");
+//const sendEmail = require("../utils/email");
 const crypto = require("crypto");
+const Email = require('../utils/email');
 
 const signToken = id => jwt.sign({id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRES_IN});
 
@@ -23,22 +24,28 @@ const createAndSendToken = (user, code, res) => {
 }
 
 exports.signin = catchAsync(async (req,res,next) => {
-    const {username,password} = req.body;
-
-    if(!username || !password){
-        throw new MyError(`Please enter your ${!username?"username":"password"}!!`,400);
+    const {email,password} = req.body;
+    if(!email || !password){
+        throw new MyError(`Please enter your ${!email?"email":"password"}!!`,400);
     }
-    const user = await  User.findOne({username}).select("+password");
+    const user = await  User.findOne({email}).select("+password");
     if(!user){
-        throw new MyError("Invalid username or password", 401);
+        throw new MyError("Invalid email or password", 401);
     }
     const verified = await user.verifyPassword(password,user.password);
     if(!verified){
-        throw new MyError("Invalid username or password", 401);
+        throw new MyError("Invalid email or password", 401);
     }
     createAndSendToken(user,200,res);
 });
 
+exports.logout = (req,res)=>{
+    res.cookie("jwt","Logged out", {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    });
+    res.status(200).json({status:"success", message:"Logged out Successfully!"});
+}
 
 exports.signup =catchAsync(async (req, res, next) => {
     const newUser = await User.create({
@@ -48,15 +55,44 @@ exports.signup =catchAsync(async (req, res, next) => {
         confirmpass: req.body.confirmpass,
         email: req.body.email
     });
-
+    const url = `${req.protocol}://${req.get('host')}/me`
+    await new Email(newUser,url).sendWelcome();
     createAndSendToken(newUser,201,res);
 });
 
+exports.isLoggedIn = async (req,res,next) => {
+    let token;
+    if(req.cookies.jwt){
+        token = req.cookies.jwt;
+    }
+    if(!token){
+        return next();
+    }
+    let payload;
+    try {
+        payload = await promisify(jwt.verify)(token,process.env.JWT_SECRET);
+    } catch (error) {
+        return next();
+    }    
+    const user = await User.findById(payload.id);
+    if(!user){
+        return next()
+    }
+
+    if(user.changesPasswordAfter(payload.iat)){
+        return next()
+    }
+    res.locals.user = user;
+    next();
+};
 
 exports.protectRoute = catchAsync(async (req,res,next) => {
     let token;
     if(req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
         token = req.headers.authorization.split(" ")[1];
+    }
+    else if(req.cookies.jwt){
+        token = req.cookies.jwt;
     }
     if(!token){
         throw new MyError("You are not logged in, please log in to get access", 401);
@@ -74,6 +110,7 @@ exports.protectRoute = catchAsync(async (req,res,next) => {
     }
 
     req.user = user;
+    res.locals.user = user;
     next();
 });
 
@@ -96,17 +133,10 @@ exports.forgotPassword = catchAsync(async (req,res,next) => {
     }
     const resetToken = user.getPasswordResetToken();
     await user.save({validateBeforeSave: false});
-    const resetURL = `${req.protocol}://${req.get("host")}/api/v1/users/resetpassword/${resetToken}`;
-    const message = `Forgot your password? please submit a PATCH request together with your
-    password and confirmpass via ${resetURL}.\nIf you didn't forgot your password? please ignore this email`;
-    
+    const resetURL = `${req.protocol}://${req.get("host")}/api/v1/users/resetpassword/${resetToken}`;    
     try{
-        await sendEmail({
-            email: user.email,
-            subject: "Your password reset link (Expires in 15 minutes)",
-            message
-        });
-        res.status(200).json({status:"success",message:"Token sent to your email!!"});
+        await new Email(user,resetURL).sendPasswordReset();
+        res.status(200).json({status:"success",message:"Token sent to your email success fully!!"});
     }catch(err){
         user.passwordResetToken = undefined;
         user.resetTokenExpiresAt = undefined;

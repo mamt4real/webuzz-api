@@ -1,0 +1,101 @@
+extends base
+
+include _overviewBox
+
+block content 
+    section.section-header
+        .header__hero 
+            .header__hero-overlay &nbsp;
+            img.header__hero-img(src=`/img/posts/${post.coverImg}` alt=`${post.title}`)
+        .heading-box
+            h1.heading-primary
+                span= post.title
+            .heading-box__group
+                .heading-box__detail
+                    svg.heading-box__icon
+                        use(xlink:href='/img/icons.svg#icon-clock')
+                    span.heading-box__text #{post.readTime} Minutes Reading
+                .heading-box__detail
+                    svg.heading-box__icon
+                        use(xlink:href='/img/icons.svg#icon-map-pin')
+                    span.heading-box__text= post.tags[0]
+
+    section.section-description
+        .overview-box.overview-box--sized
+            div
+                .overview-box__group
+                    h2.heading-secondary.ma-bt-lg Quick facts
+                    - const date = post.dateCreated.toLocaleString("en-us", {month:"long", year:"numeric"})
+                    - const overviews = [["Published date",date,"calendar"],["Duration",post.duration,"calendar"],["Average Reading Time",post.readTime + " minutes","clock"],["Comments",post.noOfComments,"message-square"],["Likes",post.noOfClaps,"thumbs-up"]]
+                    each overview in overviews 
+                        +overviewBox(...overview)
+                .overview-box__group
+                    h2.heading-secondary.ma-bt-lg Topic(s)
+                    each tag in post.tags
+                        -if(tag !== '')
+                            +overviewBox(tag,'','map-pin')  
+                .overview-box__group
+                    h2.heading-secondary.ma-bt-lg Author
+                    .reviews__avatar
+                        img.reviews__avatar-img(src=`/img/users/${post.authorID.image}` alt=`${post.authorID.username}`)
+                        h6.reviews__user= post.authorID.name
+                    .reviews__text= post.authorID.about
+                    button.btn.btn--green.span-all-rows(value=post.authorID.id class='follow-btn' disabled= !user || (post.authorID.id === user.id))
+                        | Follow &nbsp;
+                        svg.heading-box__icon
+                            use(xlink:href='/img/icons.svg#icon-plus-circle')
+
+        .description-box.description-box--sized
+            h2.heading-secondary.ma-bt-lg #{post.title}
+            //p.description__text= post.summary
+            each paragraph in post.content.split('\n')
+                p.description__text.description__text--bigger= paragraph
+
+            .cta
+                .cta__img.cta__img--logo
+                    img(src='/img/logo-white.png' alt='Natours logo' class='')
+                img(src=`/img/posts/${post.coverImg}` alt='' class='cta__img cta__img--1')
+                img(src=`/img/posts/${post.coverImg}` alt='' class='cta__img cta__img--2')            
+                form#comment-post-form.form.form--mine
+                    input#comment-content.form__input(type='text' required name='content' placeholder='write your comment')                    
+                    button#comment-post-btn.btn.btn--green.btn-small(value=post.id) Comment
+                .cta__content.cta__content--mine
+                    button.btn.btn--green.span-all-rows.like-btn.like-btn--post(value=`${post.id}`)
+                        svg.heading-box__icon
+                            use(xlink:href=`/img/icons.svg#icon-${(!user || !post.claps.includes(user.id))?'thumbs-up':'thumbs-down'}`)
+                        | &nbsp; #{(!user || !post.claps.includes(user.id))?'Like':'Dislike'}
+                    button#bookmark.btn.btn--green.span-all-rows(value=`${post.id}`)
+                        svg.heading-box__icon
+                            use(xlink:href='/img/icons.svg#icon-bookmark')
+                        | &nbsp;Bookmark
+                    button.btn.btn--green.span-all-rows
+                        svg.heading-box__icon
+                            use(xlink:href='/img/icons.svg#icon-share-2')
+                        | &nbsp;Share
+    //- .section-pictures
+    //-     each i in [1,2,3]
+    //-         .picture-box
+    //-             img(class=`picture-box__img picture-box__img--${i}` src=`/img/posts/${post.coverImg}` alt=`${post.title}`)
+
+    //- section.section-cta
+    
+    section.section-reviews
+        .reviews
+            each comment in post.comments
+                .reviews__card
+                    .reviews__avatar
+                        img.reviews__avatar-img(src=`/img/users/${comment.authorID.image}` alt=`${comment.authorID.username}`)
+                        h6.reviews__user= comment.authorID.name
+                    .reviews__text= comment.content
+                    .reviews__rating
+                        button.btn.btn--green.btn-small.btn-smaller.like-btn.like-btn--comment(value=`${comment.id}`)
+                            | #{(!user || !comment.claps.includes(user.id))?'Like':'Dislike'} &nbsp;
+                            svg.heading-box__icon
+                                use(xlink:href=`/img/icons.svg#icon-${(!user || !comment.claps.includes(user.id))?'thumbs-up':'thumbs-down'}`)
+                        button.btn.btn--green.btn-small.btn-smaller
+                            | Reply&nbsp;
+                            svg.heading-box__icon
+                                use(xlink:href=`/img/icons.svg#icon-corner-right-up`)
+                        //-each a in [1,2,3,4,5]
+                        //-    svg.reviews__star.reviews__star--active
+                        //-        use(xlink:href='img/icons.svg#icon-star')

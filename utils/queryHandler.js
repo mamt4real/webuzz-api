@@ -10,8 +10,16 @@ class QueryHandler{
         let queryParam = {...this.queryString};
         const excluded = ["page","sort","limit","fields"];
         excluded.forEach(param => delete queryParam[param]);
-        const queryStr = JSON.stringify(queryParam);
+        let queryStr = JSON.stringify(queryParam);
+
+        //queryStr = queryStr.replace(/\/.*\//g, match => `{$regex:${match}}`);
         queryParam = JSON.parse(queryStr.replace(/\b(gte|gt|lte|lt|ne)\b/g, match => `$${match}`));
+        
+        //handle search for the following fields using regex
+        ['title','name'].forEach(field => {
+            if(queryParam[field])
+                queryParam[field] = new RegExp(".*" + queryParam[field] + ".*","i");
+        });
         
         /* console.log(queryParam)
         for(let field in queryParam){
