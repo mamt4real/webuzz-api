@@ -25,7 +25,7 @@ exports.home = catchAsync(async (req, res, next) => {
 });
 
 exports.overview = catchAsync(async (req, res, next) => {
-  const posts = await Post.find()
+  const posts = await Post.find({published:true})
     .select('-content')
     .populate('authorID', 'name image about');
   res.status(200).render('overview', {

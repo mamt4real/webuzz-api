@@ -98,14 +98,7 @@ if (userEditForm)
 if (createUserForm)
   createUserForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    //const data = new FormData(createUserForm);
-    const data = {
-      name: document.getElementById('name').value,
-      email: document.getElementById('email').value,
-      password: document.getElementById('password').value,
-      confirmpass: document.getElementById('password-confirm').value,
-      clearance: document.getElementById('clearance').value
-    };
+    const data = new FormData(createUserForm);
     await createUser(data);
   });
 

@@ -12,6 +12,8 @@ router
   .get(postController.setDefaultFilter, postController.getAll)
   .post(
     authController.protectRoute,
+    postController.uploadCoverPhoto,
+    postController.resizeCoverPhoto,
     postController.assignIDs,
     postController.createPost
   );
